@@ -392,412 +392,94 @@ Summary: This confirms the app, pods, and service are running.
 
 ---
 
-# Step 24: Install Helm
+# Destroy Infrastructure
 
-## Command Overview:
+After testing or completing the project, Terraform can remove all AWS infrastructure resources to avoid unnecessary AWS charges.
 
-Command: `helm version`
+The destroy process removes:
 
-Explanation:
-
-* `helm version`: Confirms Helm is installed.
-
-Summary: This verifies Helm is ready to install Kubernetes add-ons.
-
----
-
-# Step 25: Add NGINX Ingress Repo
-
-## Command Overview:
-
-Command: `helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && helm repo update`
-
-Explanation:
-
-* `helm repo add`: Adds the NGINX Ingress Helm chart.
-* `helm repo update`: Updates Helm repositories.
-
-Summary: This prepares Helm to install NGINX Ingress.
+- Amazon EKS Cluster
+- EKS Worker Nodes
+- Amazon VPC
+- Public and Private Subnets
+- NAT Gateway
+- Internet Gateway
+- Route Tables
+- Security Groups
+- IAM Roles
+- Amazon ECR Repository
+- Load Balancer Resources
 
 ---
 
-# Step 26: Apply NGINX Ingress
+# Terraform Destroy Command
 
 ## Command Overview:
 
-Command: `kubectl apply -f k8s/ingress.yaml`
+Command: `terraform destroy -auto-approve`
 
 Explanation:
 
-* `ingress.yaml`: Creates the Kubernetes ingress route.
+- `terraform`: Runs Terraform.
+- `destroy`: Removes AWS infrastructure resources.
+- `-auto-approve`: Automatically approves resource deletion.
 
-Summary: This connects external traffic to the Kubernetes service.
-
----
-
-# Step 27: Verify Ingress
-
-## Command Overview:
-
-Command: `kubectl get ingress -n enterprise-app`
-
-Explanation:
-
-* `kubectl get ingress`: Shows ingress details.
-* `-n enterprise-app`: Checks the application namespace.
-
-Summary: This confirms the public route was created.
+Summary: This command safely removes all AWS infrastructure created by Terraform.
 
 ---
 
-# Step 28: Associate IAM OIDC Provider
+# Run Terraform Destroy
 
-## Command Overview:
+Navigate to the Terraform directory:
 
-Command: `eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster enterprise-eks-security-cluster --approve`
-
-Explanation:
-
-* `eksctl utils associate-iam-oidc-provider`: Connects IAM to EKS service accounts.
-* `--cluster`: Selects the EKS cluster.
-* `--approve`: Applies the change.
-
-Summary: This prepares IAM permissions for the AWS Load Balancer Controller.
-
----
-
-# Step 29: Download AWS Load Balancer Controller IAM Policy
-
-## Command Overview:
-
-Command: `curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.14.1/docs/install/iam_policy.json`
-
-Explanation:
-
-* `curl -O`: Downloads a file from the internet.
-* `iam_policy.json`: IAM permissions policy file.
-
-Summary: This downloads the AWS Load Balancer Controller IAM policy.
-
----
-
-# Step 30: Create IAM Policy
-
-## Command Overview:
-
-Command: `aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json`
-
-Explanation:
-
-* `aws iam create-policy`: Creates an IAM policy.
-* `--policy-name`: Names the policy.
-* `--policy-document`: Uses the downloaded JSON file.
-
-Summary: This creates AWS permissions for the Load Balancer Controller.
-
----
-
-# Step 31: Create IAM Service Account
-
-## Command Overview:
-
-Command: `eksctl create iamserviceaccount --cluster=enterprise-eks-security-cluster --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::727646499790:policy/AWSLoadBalancerControllerIAMPolicy --approve --region us-east-1`
-
-Explanation:
-
-* `eksctl create iamserviceaccount`: Creates a Kubernetes service account linked to IAM.
-* `--namespace=kube-system`: Uses the Kubernetes system namespace.
-* `--attach-policy-arn`: Attaches AWS permissions.
-* `--approve`: Applies the change.
-
-Summary: This gives the AWS Load Balancer Controller permission to manage ALBs.
-
----
-
-# Step 32: Add AWS EKS Helm Repo
-
-## Command Overview:
-
-Command: `helm repo add eks https://aws.github.io/eks-charts && helm repo update`
-
-Explanation:
-
-* `helm repo add eks`: Adds AWS EKS Helm charts.
-* `helm repo update`: Updates Helm chart data.
-
-Summary: This prepares Helm to install the AWS Load Balancer Controller.
-
----
-
-# Step 33: Install AWS Load Balancer Controller
-
-## Command Overview:
-
-Command: `helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=enterprise-eks-security-cluster --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set region=us-east-1 --set vpcId=YOUR_VPC_ID`
-
-Explanation:
-
-* `helm install`: Installs the controller.
-* `clusterName`: Sets the EKS cluster.
-* `serviceAccount.create=false`: Uses the IAM service account.
-* `vpcId`: Uses your VPC ID.
-
-Summary: This installs the controller that creates AWS Application Load Balancers.
-
----
-
-# Step 34: Verify AWS Load Balancer Controller
-
-## Command Overview:
-
-Command: `kubectl get deployment -n kube-system aws-load-balancer-controller`
-
-Explanation:
-
-* `kubectl get deployment`: Checks deployment status.
-* `-n kube-system`: Checks the system namespace.
-
-Summary: This confirms the AWS Load Balancer Controller is running.
-
----
-
-# Step 35: Deploy ALB Ingress
-
-## Command Overview:
-
-Command: `kubectl apply -f k8s/alb-ingress.yaml`
-
-Explanation:
-
-* `alb-ingress.yaml`: Creates the Application Load Balancer ingress.
-
-Summary: This creates the public AWS Application Load Balancer for the app.
-
----
-
-# Step 36: Verify ALB Ingress
-
-## Command Overview:
-
-Command: `kubectl get ingress -n enterprise-app`
-
-Explanation:
-
-* `kubectl get ingress`: Displays ingress resources.
-
-Summary: This confirms the ALB endpoint was created.
-
----
-
-# Step 37: Test ALB URL
-
-## Command Overview:
-
-Command: `curl http://YOUR_ALB_DNS_NAME`
-
-Explanation:
-
-* `curl`: Sends a web request.
-* `YOUR_ALB_DNS_NAME`: Replace with your ALB address.
-
-Summary: This confirms the ALB can reach the Kubernetes application.
-
----
-
-# Step 38: Configure Cloudflare DNS
-
-In Cloudflare, create a DNS record:
-
-```text
-Type: CNAME
-Name: @
-Target: YOUR_ALB_DNS_NAME
-Proxy Status: Proxied
+```bash
+cd terraform
 ```
 
-Summary: This connects your domain to the AWS Application Load Balancer through Cloudflare.
+Run the destroy command:
 
----
-
-# Step 39: Test HTTPS Website
-
-Open:
-
-```text
-https://caremedix.net
+```bash
+terraform destroy -auto-approve
 ```
 
-Summary: This confirms the secure website is reachable through HTTPS.
+---
+
+# Verify Resource Cleanup
+
+After the destroy process completes, verify that the following resources were removed:
+
+- Amazon EKS Cluster
+- EC2 Worker Nodes
+- Application Load Balancer
+- NAT Gateway
+- VPC Resources
+- Security Groups
+- ECR Repository
 
 ---
 
-# Step 40: Create AWS WAF Web ACL
+# Important Notes
 
-Create a WAF Web ACL and attach it to the Application Load Balancer.
-
-Recommended protections:
-
-* AWS Managed Common Rules
-* Known Bad Inputs
-* SQL Injection Rules
-* Linux Rule Set
-* Anti-DDoS Rules
-* Geographic blocking
-
-Blocked countries:
-
-* Cuba
-* Iran
-* North Korea
-* Russia
-* Syria
-* Venezuela
-
-Summary: This protects the ALB from malicious web traffic.
+- Ensure no production workloads are running before destroying resources.
+- Terraform destroy permanently removes infrastructure resources.
+- Always verify the correct AWS account before running the command.
+- NAT Gateways and Load Balancers may continue billing if not removed properly.
 
 ---
 
-# Step 41: Enable WAF Logging
-
-Create CloudWatch log group:
-
-```text
-aws-waf-logs-enterprise
-```
-
-Retention:
-
-```text
-30 days
-```
-
-Summary: This stores AWS WAF logs for security review.
-
----
-
-# Step 42: Install Kubernetes Metrics Server
+# Final Cleanup Validation
 
 ## Command Overview:
 
-Command: `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml`
+Command: `aws eks list-clusters --region us-east-1`
 
 Explanation:
 
-* `kubectl apply`: Installs Kubernetes resources.
-* `components.yaml`: Metrics Server deployment file.
+- `aws eks`: Accesses Amazon EKS services.
+- `list-clusters`: Displays existing EKS clusters.
+- `--region us-east-1`: Uses the AWS us-east-1 region.
 
-Summary: This enables Kubernetes CPU and memory monitoring.
-
----
-
-# Step 43: Verify Metrics Server
-
-## Command Overview:
-
-Command: `kubectl get pods -n kube-system | grep metrics-server`
-
-Explanation:
-
-* `kubectl get pods`: Lists system pods.
-* `grep metrics-server`: Filters for Metrics Server.
-
-Summary: This confirms Metrics Server is running.
-
----
-
-# Step 44: Check Node Metrics
-
-## Command Overview:
-
-Command: `kubectl top nodes`
-
-Explanation:
-
-* `kubectl top nodes`: Shows CPU and memory usage.
-
-Summary: This confirms node-level monitoring is working.
-
----
-
-# Step 45: Check Pod Metrics
-
-## Command Overview:
-
-Command: `kubectl top pods -n enterprise-app`
-
-Explanation:
-
-* `kubectl top pods`: Shows pod resource usage.
-* `-n enterprise-app`: Checks application pods.
-
-Summary: This confirms pod-level monitoring is working.
-
----
-
-# Step 46: Create CloudWatch Dashboard
-
-Create a CloudWatch dashboard named:
-
-```text
-enterprise-eks-dashboard
-```
-
-Recommended widgets:
-
-* ALB RequestCount
-* ALB TargetResponseTime
-* Container CPU Utilization
-* Container Memory Utilization
-* Network Traffic
-
-Summary: This provides centralized visibility for the application and infrastructure.
-
----
-
-# Step 47: Verify Security Services
-
-Check the following services:
-
-* AWS WAF
-* Amazon GuardDuty
-* AWS Security Hub
-* AWS CloudTrail
-* Amazon CloudWatch
-* Amazon SNS
-
-Summary: This confirms the environment has enterprise security monitoring.
-
----
-
-# Step 48: Validate Final Deployment
-
-## Command Overview:
-
-Command: `kubectl get all -n enterprise-app && kubectl get ingress -n enterprise-app && kubectl get nodes`
-
-Explanation:
-
-* `kubectl get all`: Checks app resources.
-* `kubectl get ingress`: Checks public access.
-* `kubectl get nodes`: Checks worker nodes.
-
-Summary: This confirms the full EKS platform is deployed and healthy.
-
----
-
-# Step 49: Update GitHub Repository
-
-## Command Overview:
-
-Command: `git add . && git commit -m "Add deployment guide" && git push origin main`
-
-Explanation:
-
-* `git add .`: Stages all updates.
-* `git commit`: Saves the deployment guide.
-* `git push`: Uploads changes to GitHub.
-
-Summary: This publishes the deployment guide in GitHub.
+Summary: This command verifies that the EKS cluster was successfully deleted.
 
 ---
 
