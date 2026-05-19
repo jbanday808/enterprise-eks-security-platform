@@ -797,7 +797,7 @@ Explanation:
 * `git commit`: Saves the deployment guide.
 * `git push`: Uploads changes to GitHub.
 
-Summary: This publishes the deployment guide for recruiters and hiring managers.
+Summary: This publishes the deployment guide in GitHub.
 
 ---
 
