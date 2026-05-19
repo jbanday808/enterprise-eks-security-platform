@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project demonstrates an enterprise-grade Kubernetes security platform running on Amazon EKS using Terraform, Docker, Kubernetes, AWS WAF, Cloudflare, Amazon CloudWatch, GuardDuty, Security Hub, and CI/CD automation with GitHub Actions.
+This project demonstrates an enterprise-grade Kubernetes security platform running on Amazon EKS using Terraform, Docker, Kubernetes, AWS WAF, Cloudflare, Amazon CloudWatch, GuardDuty, Security Hub, CloudTrail, Amazon SNS, and CI/CD automation with GitHub Actions.
 
-The architecture follows enterprise cloud security best practices by implementing private networking, Kubernetes RBAC, network policies, centralized monitoring, HTTPS protection, container security, vulnerability scanning, and infrastructure automation.
+The architecture follows enterprise cloud security best practices by implementing private networking, Kubernetes RBAC, Kubernetes Network Policies, HTTPS encryption, container security, vulnerability scanning, centralized monitoring, infrastructure automation, and layered cloud security controls.
 
 ---
 
@@ -16,7 +16,7 @@ The architecture follows enterprise cloud security best practices by implementin
 
 # Architecture Explanation
 
-**Step 1:** Developers push code changes to GitHub.
+**Step 1:** Developers push application source code to GitHub.
 
 **Step 2:** GitHub Actions automatically starts the CI/CD pipeline.
 
@@ -26,35 +26,35 @@ The architecture follows enterprise cloud security best practices by implementin
 
 **Step 5:** Terraform provisions AWS infrastructure resources.
 
-**Step 6:** Amazon VPC provides isolated enterprise cloud networking.
+**Step 6:** Amazon VPC provides isolated enterprise networking.
 
 **Step 7:** Public subnets host the Application Load Balancer and NAT Gateways.
 
-**Step 8:** Private subnets host Amazon EKS worker nodes and Kubernetes pods.
+**Step 8:** Private subnets host Amazon EKS worker nodes and Kubernetes workloads.
 
-**Step 9:** NAT Gateways allow secure outbound internet access from private resources.
+**Step 9:** NAT Gateways provide secure outbound internet access for private workloads.
 
-**Step 10:** Amazon EKS manages Kubernetes container orchestration.
+**Step 10:** Amazon EKS manages Kubernetes orchestration and container scheduling.
 
-**Step 11:** EKS worker nodes run the Kubernetes workloads.
+**Step 11:** Kubernetes workloads run securely inside private subnets.
 
 **Step 12:** AWS WAF filters malicious web traffic before reaching the application.
 
-**Step 13:** The Application Load Balancer securely routes traffic to Kubernetes services.
+**Step 13:** Cloudflare protects and accelerates external HTTPS traffic.
 
-**Step 14:** Cloudflare protects and accelerates external HTTPS traffic.
+**Step 14:** Application Load Balancer routes secure HTTPS traffic to Kubernetes services.
 
-**Step 15:** AWS CloudTrail records AWS account activity and auditing logs.
+**Step 15:** Amazon CloudWatch monitors metrics, logs, dashboards, and performance.
 
-**Step 16:** Amazon GuardDuty detects suspicious activity and threats.
+**Step 16:** AWS CloudTrail records AWS account activity and API auditing.
 
-**Step 17:** AWS Security Hub centralizes security findings and alerts.
+**Step 17:** Amazon GuardDuty detects suspicious activity and potential threats.
 
-**Step 18:** Amazon CloudWatch monitors logs, dashboards, metrics, and performance.
+**Step 18:** AWS Security Hub centralizes security findings and alerts.
 
-**Step 19:** Amazon SNS sends alerts and notifications for operational events.
+**Step 19:** Amazon SNS sends monitoring and security notifications.
 
-**Step 20:** Users securely access the application through HTTPS.
+**Step 20:** Users securely access the Kubernetes application through HTTPS.
 
 ---
 
@@ -85,10 +85,12 @@ The architecture follows enterprise cloud security best practices by implementin
 
 - Kubernetes RBAC
 - Kubernetes Network Policies
+- Namespace Isolation
 - Private Subnets
 - NAT Gateway Protection
 - HTTPS/TLS Encryption
 - AWS WAF Protection
+- Cloudflare DDoS Protection
 - Container Vulnerability Scanning
 - CloudWatch Monitoring
 - Security Hub Findings
@@ -97,9 +99,9 @@ The architecture follows enterprise cloud security best practices by implementin
 - Least Privilege IAM
 - Infrastructure as Code with Terraform
 - CI/CD Automation with GitHub Actions
-- Secure Docker Containers
+- Secure Non-Root Containers
 - ALB HTTPS Listener
-- Cloudflare DDoS Protection
+- RuntimeDefault Seccomp Profiles
 
 ---
 
@@ -154,8 +156,8 @@ The GitHub Actions workflow automatically:
 
 1. Checks out source code
 2. Configures AWS credentials
-3. Builds the Docker image
-4. Pushes the image to Amazon ECR
+3. Builds Docker images
+4. Pushes images to Amazon ECR
 5. Connects to Amazon EKS
 6. Deploys Kubernetes resources
 7. Restarts Kubernetes deployment
@@ -163,23 +165,122 @@ The GitHub Actions workflow automatically:
 
 ---
 
-# Monitoring and Logging
+# CloudWatch Dashboard and Monitoring
 
-This platform includes enterprise monitoring and security visibility:
+The Enterprise Kubernetes Security Platform includes a centralized Amazon CloudWatch dashboard for monitoring Kubernetes workloads, Application Load Balancer performance, infrastructure health, and operational visibility.
 
-- AWS CloudWatch Dashboards
-- AWS WAF Logging
-- GuardDuty Threat Detection
-- AWS Security Hub Findings
-- Kubernetes Metrics Server
-- CloudTrail Auditing
-- Amazon SNS Notifications
+The dashboard provides real-time monitoring and observability across the Amazon EKS environment.
+
+---
+
+# CloudWatch Dashboard Features
+
+## Application Load Balancer Metrics
+
+The dashboard monitors:
+
+- ALB Request Count
+- ALB Target Response Time
+- ALB Traffic Patterns
+- Load Balancer Health
+
+These metrics help identify traffic spikes, latency issues, and application availability problems.
+
+---
+
+## Kubernetes Container Metrics
+
+The dashboard tracks Kubernetes container performance metrics:
+
+- Container CPU Utilization
+- Container Memory Utilization
+- Network Transmit Bytes
+- Resource Consumption Trends
+
+These metrics help monitor application workload health and container resource usage.
+
+---
+
+## Infrastructure Monitoring
+
+The CloudWatch dashboard provides visibility into:
+
+- Amazon EKS Worker Node Health
+- Kubernetes Pod Performance
+- Network Traffic Activity
+- Application Availability
+- System Resource Usage
+
+This improves operational awareness across the Kubernetes platform.
+
+---
+
+# CloudWatch Dashboard Screenshot
+
+![Enterprise EKS CloudWatch Dashboard](images/Enterprise%20EKS%20Dashboard.png)
+
+---
+
+# Monitoring Benefits
+
+The monitoring platform provides several operational and security advantages:
+
+- Detects performance bottlenecks
+- Monitors Kubernetes application health
+- Tracks infrastructure resource usage
+- Identifies abnormal traffic patterns
+- Improves operational visibility
+- Supports incident response and troubleshooting
+- Centralizes observability across the EKS environment
+- Provides real-time cloud infrastructure monitoring
+- Supports proactive issue detection
+
+---
+
+# AWS Services Used for Monitoring
+
+The monitoring platform integrates multiple AWS services:
+
+- Amazon CloudWatch
+- Amazon EKS
+- Application Load Balancer
+- AWS WAF
+- Amazon SNS
+- AWS CloudTrail
+- Amazon GuardDuty
+- AWS Security Hub
+
+---
+
+# CloudWatch Dashboard Metrics
+
+| Metric | Purpose |
+|---|---|
+| RequestCount | Tracks incoming ALB traffic |
+| TargetResponseTime | Measures application latency |
+| ContainerCpuUtilization | Monitors Kubernetes CPU usage |
+| ContainerMemoryUtilization | Tracks container memory usage |
+| NetworkTxBytes | Monitors outbound network traffic |
+
+---
+
+# Security and Monitoring Integration
+
+The dashboard supports enterprise security operations by integrating with:
+
+- AWS WAF logging
+- GuardDuty threat findings
+- Security Hub centralized findings
+- CloudTrail audit logs
+- Amazon SNS notifications
+
+This improves security visibility and monitoring across the Kubernetes platform.
 
 ---
 
 # Deployment Commands
 
-## Terraform
+## Terraform Deployment
 
 ```bash
 terraform init
@@ -188,11 +289,15 @@ terraform plan
 terraform apply -auto-approve
 ```
 
+---
+
 ## Configure kubectl
 
 ```bash
 aws eks update-kubeconfig --region us-east-1 --name enterprise-eks-security-cluster
 ```
+
+---
 
 ## Deploy Kubernetes Resources
 
@@ -215,7 +320,7 @@ kubectl apply -f k8s/alb-ingress.yaml
 kubectl get nodes
 ```
 
-## Verify Application
+## Verify Kubernetes Application
 
 ```bash
 kubectl get all -n enterprise-app
@@ -233,20 +338,53 @@ kubectl get ingress -n enterprise-app
 kubectl get deployment -n kube-system aws-load-balancer-controller
 ```
 
+## Verify Metrics Server
+
+```bash
+kubectl top nodes
+kubectl top pods -n enterprise-app
+```
+
+---
+
+# Monitoring and Security Services
+
+This platform integrates enterprise monitoring and security services:
+
+- AWS CloudWatch Dashboards
+- AWS WAF Logging
+- GuardDuty Threat Detection
+- AWS Security Hub Findings
+- Kubernetes Metrics Server
+- CloudTrail Auditing
+- Amazon SNS Notifications
+
 ---
 
 # Lessons Learned
 
 - Built secure Kubernetes infrastructure on Amazon EKS
-- Automated infrastructure using Terraform
+- Automated infrastructure deployment using Terraform
 - Implemented Kubernetes RBAC and Network Policies
-- Configured enterprise monitoring and logging
-- Integrated AWS security services
+- Configured enterprise cloud monitoring and logging
 - Deployed secure Docker containers
-- Implemented ALB ingress with HTTPS
-- Integrated Cloudflare and AWS WAF
+- Integrated AWS security services
 - Built CI/CD pipelines using GitHub Actions
-- Managed enterprise-grade Kubernetes networking
+- Implemented Application Load Balancer ingress
+- Configured Cloudflare secure DNS routing
+- Improved Kubernetes security posture
+- Strengthened troubleshooting and DevSecOps skills
+
+---
+
+# Documentation
+
+Additional project documentation:
+
+- `docs/architecture.md`
+- `docs/deployment-guide.md`
+- `docs/security-controls.md`
+- `docs/lessons-learned.md`
 
 ---
 
