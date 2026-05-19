@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project demonstrates an enterprise-grade Kubernetes security platform running on Amazon EKS using Terraform, Docker, Kubernetes, AWS WAF, Cloudflare, Amazon CloudWatch, GuardDuty, Security Hub, CloudTrail, Amazon SNS, and CI/CD automation with GitHub Actions.
+This project demonstrates an enterprise-grade Kubernetes security platform running on Amazon EKS using Terraform, Docker, Kubernetes, AWS WAF, Cloudflare, Amazon CloudWatch, CloudTrail, GuardDuty, Security Hub, Amazon SNS, and CI/CD automation with GitHub Actions.
 
-The architecture follows enterprise cloud security best practices by implementing private networking, Kubernetes RBAC, Kubernetes Network Policies, HTTPS encryption, container security, vulnerability scanning, centralized monitoring, infrastructure automation, and layered cloud security controls.
+The architecture follows enterprise cloud security best practices by implementing private networking, Kubernetes RBAC, Kubernetes Network Policies, HTTPS encryption, centralized monitoring, infrastructure automation, vulnerability scanning, container security, and layered AWS security controls.
 
 ---
 
@@ -42,17 +42,17 @@ The architecture follows enterprise cloud security best practices by implementin
 
 **Step 13:** Cloudflare protects and accelerates external HTTPS traffic.
 
-**Step 14:** Application Load Balancer routes secure HTTPS traffic to Kubernetes services.
+**Step 14:** Application Load Balancer securely routes traffic to Kubernetes services.
 
-**Step 15:** Amazon CloudWatch monitors metrics, logs, dashboards, and performance.
+**Step 15:** Amazon CloudWatch monitors logs, metrics, dashboards, and infrastructure health.
 
-**Step 16:** AWS CloudTrail records AWS account activity and API auditing.
+**Step 16:** AWS CloudTrail records AWS API activity and auditing logs.
 
-**Step 17:** Amazon GuardDuty detects suspicious activity and potential threats.
+**Step 17:** Amazon GuardDuty detects suspicious activity and threats.
 
-**Step 18:** AWS Security Hub centralizes security findings and alerts.
+**Step 18:** AWS Security Hub centralizes cloud security findings.
 
-**Step 19:** Amazon SNS sends monitoring and security notifications.
+**Step 19:** Amazon SNS sends monitoring and security alerts.
 
 **Step 20:** Users securely access the Kubernetes application through HTTPS.
 
@@ -100,8 +100,8 @@ The architecture follows enterprise cloud security best practices by implementin
 - Infrastructure as Code with Terraform
 - CI/CD Automation with GitHub Actions
 - Secure Non-Root Containers
-- ALB HTTPS Listener
 - RuntimeDefault Seccomp Profiles
+- ALB HTTPS Listener
 
 ---
 
@@ -125,7 +125,8 @@ README.md
 The Terraform configuration automatically provisions:
 
 - Amazon VPC
-- Public and Private Subnets
+- Public Subnets
+- Private Subnets
 - Internet Gateway
 - NAT Gateway
 - Route Tables
@@ -264,17 +265,147 @@ The monitoring platform integrates multiple AWS services:
 
 ---
 
-# Security and Monitoring Integration
+# AWS WAF Logging and Monitoring
 
-The dashboard supports enterprise security operations by integrating with:
+The platform includes centralized AWS WAF logging integrated with Amazon CloudWatch Logs for real-time web application security monitoring and threat visibility.
 
-- AWS WAF logging
-- GuardDuty threat findings
-- Security Hub centralized findings
-- CloudTrail audit logs
-- Amazon SNS notifications
+AWS WAF logs help monitor incoming traffic, detect malicious requests, analyze blocked events, and improve application security posture.
 
-This improves security visibility and monitoring across the Kubernetes platform.
+---
+
+# AWS WAF Logging Features
+
+The AWS WAF logging configuration provides:
+
+- Real-time web request monitoring
+- Threat visibility and analysis
+- Application Load Balancer request inspection
+- Managed rule evaluation
+- Traffic filtering visibility
+- Security event auditing
+- CloudWatch centralized logging
+
+---
+
+# AWS WAF CloudWatch Log Screenshot
+
+![AWS WAF CloudWatch Monitoring](images/AWS%20CloudWatch%20Monitoring.png)
+
+---
+
+# AWS WAF Security Monitoring
+
+The WAF logging platform monitors:
+
+- Allowed requests
+- Blocked requests
+- SQL injection attempts
+- Malicious request patterns
+- Geographic request sources
+- AWS managed rule activity
+- ALB traffic inspection
+
+---
+
+# AWS WAF Managed Rules
+
+The platform uses AWS Managed WAF Rules including:
+
+- AWSManagedRulesCommonRuleSet
+- AWSManagedRulesKnownBadInputsRuleSet
+- AWSManagedRulesSQLiRuleSet
+- AWSManagedRulesLinuxRuleSet
+- AWSManagedRulesAnonymousIpList
+
+These rules help protect the Kubernetes application from common web attacks.
+
+---
+
+# CloudWatch Logging Benefits
+
+CloudWatch centralized logging provides:
+
+- Security visibility
+- Threat detection support
+- Real-time traffic monitoring
+- Audit logging
+- Incident investigation support
+- Operational troubleshooting
+- Enterprise observability
+
+---
+
+# Security Monitoring Integration
+
+AWS WAF logging integrates with:
+
+- Amazon CloudWatch
+- Application Load Balancer
+- Amazon GuardDuty
+- AWS Security Hub
+- AWS CloudTrail
+- Amazon SNS Notifications
+
+This creates a layered enterprise monitoring and security platform.
+
+---
+
+# WAF Logging Security Value
+
+AWS WAF logging improves cloud security by:
+
+- Detecting malicious traffic patterns
+- Supporting incident response
+- Monitoring suspicious requests
+- Improving security visibility
+- Supporting compliance auditing
+- Centralizing application security monitoring
+
+---
+
+# Enterprise Monitoring Outcome
+
+The successful AWS WAF CloudWatch integration demonstrates:
+
+- Enterprise-grade security monitoring
+- Real-time AWS WAF visibility
+- Centralized log management
+- Cloud-native observability
+- Secure Kubernetes traffic inspection
+- Production-ready cloud security operations
+
+---
+
+# HTTPS Security Validation
+
+The Enterprise Kubernetes Security Platform successfully uses HTTPS encryption through Cloudflare, AWS Application Load Balancer, and AWS Certificate Manager.
+
+The secure HTTPS implementation confirms:
+
+- HTTPS encryption is enabled
+- TLS certificates are valid
+- Browser connection is secure
+- Traffic is encrypted in transit
+- Public application access is protected
+
+---
+
+# HTTPS Validation Screenshot
+
+![Secure HTTPS for EKS ALB](images/Secure%20HTTPS%20for%20EKS%20ALB.png)
+
+---
+
+# HTTPS Security Benefits
+
+The HTTPS implementation provides:
+
+- Encrypted user traffic
+- Protection against man-in-the-middle attacks
+- Secure application delivery
+- Valid SSL/TLS certificates
+- Secure browser communication
+- Enterprise cloud security protection
 
 ---
 
