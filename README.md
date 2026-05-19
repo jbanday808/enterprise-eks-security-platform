@@ -185,8 +185,6 @@ The dashboard monitors:
 - ALB Traffic Patterns
 - Load Balancer Health
 
-These metrics help identify traffic spikes, latency issues, and application availability problems.
-
 ---
 
 ## Kubernetes Container Metrics
@@ -197,8 +195,6 @@ The dashboard tracks Kubernetes container performance metrics:
 - Container Memory Utilization
 - Network Transmit Bytes
 - Resource Consumption Trends
-
-These metrics help monitor application workload health and container resource usage.
 
 ---
 
@@ -212,8 +208,6 @@ The CloudWatch dashboard provides visibility into:
 - Application Availability
 - System Resource Usage
 
-This improves operational awareness across the Kubernetes platform.
-
 ---
 
 # CloudWatch Dashboard Screenshot
@@ -222,68 +216,9 @@ This improves operational awareness across the Kubernetes platform.
 
 ---
 
-# Monitoring Benefits
-
-The monitoring platform provides several operational and security advantages:
-
-- Detects performance bottlenecks
-- Monitors Kubernetes application health
-- Tracks infrastructure resource usage
-- Identifies abnormal traffic patterns
-- Improves operational visibility
-- Supports incident response and troubleshooting
-- Centralizes observability across the EKS environment
-- Provides real-time cloud infrastructure monitoring
-- Supports proactive issue detection
-
----
-
-# AWS Services Used for Monitoring
-
-The monitoring platform integrates multiple AWS services:
-
-- Amazon CloudWatch
-- Amazon EKS
-- Application Load Balancer
-- AWS WAF
-- Amazon SNS
-- AWS CloudTrail
-- Amazon GuardDuty
-- AWS Security Hub
-
----
-
-# CloudWatch Dashboard Metrics
-
-| Metric | Purpose |
-|---|---|
-| RequestCount | Tracks incoming ALB traffic |
-| TargetResponseTime | Measures application latency |
-| ContainerCpuUtilization | Monitors Kubernetes CPU usage |
-| ContainerMemoryUtilization | Tracks container memory usage |
-| NetworkTxBytes | Monitors outbound network traffic |
-
----
-
 # AWS WAF Logging and Monitoring
 
 The platform includes centralized AWS WAF logging integrated with Amazon CloudWatch Logs for real-time web application security monitoring and threat visibility.
-
-AWS WAF logs help monitor incoming traffic, detect malicious requests, analyze blocked events, and improve application security posture.
-
----
-
-# AWS WAF Logging Features
-
-The AWS WAF logging configuration provides:
-
-- Real-time web request monitoring
-- Threat visibility and analysis
-- Application Load Balancer request inspection
-- Managed rule evaluation
-- Traffic filtering visibility
-- Security event auditing
-- CloudWatch centralized logging
 
 ---
 
@@ -293,119 +228,15 @@ The AWS WAF logging configuration provides:
 
 ---
 
-# AWS WAF Security Monitoring
-
-The WAF logging platform monitors:
-
-- Allowed requests
-- Blocked requests
-- SQL injection attempts
-- Malicious request patterns
-- Geographic request sources
-- AWS managed rule activity
-- ALB traffic inspection
-
----
-
-# AWS WAF Managed Rules
-
-The platform uses AWS Managed WAF Rules including:
-
-- AWSManagedRulesCommonRuleSet
-- AWSManagedRulesKnownBadInputsRuleSet
-- AWSManagedRulesSQLiRuleSet
-- AWSManagedRulesLinuxRuleSet
-- AWSManagedRulesAnonymousIpList
-
-These rules help protect the Kubernetes application from common web attacks.
-
----
-
-# CloudWatch Logging Benefits
-
-CloudWatch centralized logging provides:
-
-- Security visibility
-- Threat detection support
-- Real-time traffic monitoring
-- Audit logging
-- Incident investigation support
-- Operational troubleshooting
-- Enterprise observability
-
----
-
-# Security Monitoring Integration
-
-AWS WAF logging integrates with:
-
-- Amazon CloudWatch
-- Application Load Balancer
-- Amazon GuardDuty
-- AWS Security Hub
-- AWS CloudTrail
-- Amazon SNS Notifications
-
-This creates a layered enterprise monitoring and security platform.
-
----
-
-# WAF Logging Security Value
-
-AWS WAF logging improves cloud security by:
-
-- Detecting malicious traffic patterns
-- Supporting incident response
-- Monitoring suspicious requests
-- Improving security visibility
-- Supporting compliance auditing
-- Centralizing application security monitoring
-
----
-
-# Enterprise Monitoring Outcome
-
-The successful AWS WAF CloudWatch integration demonstrates:
-
-- Enterprise-grade security monitoring
-- Real-time AWS WAF visibility
-- Centralized log management
-- Cloud-native observability
-- Secure Kubernetes traffic inspection
-- Production-ready cloud security operations
-
----
-
 # HTTPS Security Validation
 
 The Enterprise Kubernetes Security Platform successfully uses HTTPS encryption through Cloudflare, AWS Application Load Balancer, and AWS Certificate Manager.
-
-The secure HTTPS implementation confirms:
-
-- HTTPS encryption is enabled
-- TLS certificates are valid
-- Browser connection is secure
-- Traffic is encrypted in transit
-- Public application access is protected
 
 ---
 
 # HTTPS Validation Screenshot
 
 ![Secure HTTPS for EKS ALB](images/Secure%20HTTPS%20for%20EKS%20ALB.png)
-
----
-
-# HTTPS Security Benefits
-
-The HTTPS implementation provides:
-
-- Encrypted user traffic
-- Protection against man-in-the-middle attacks
-- Secure application delivery
-- Valid SSL/TLS certificates
-- Secure browser communication
-- Enterprise cloud security protection
 
 ---
 
@@ -478,6 +309,53 @@ kubectl top pods -n enterprise-app
 
 ---
 
+# Destroy Infrastructure
+
+After testing or completing the project, Terraform can safely remove all AWS infrastructure resources to avoid unnecessary AWS charges.
+
+---
+
+# Terraform Destroy Command
+
+## Command Overview:
+
+Command: `terraform destroy -auto-approve`
+
+Explanation:
+
+- `terraform`: Runs Terraform.
+- `destroy`: Removes AWS infrastructure resources.
+- `-auto-approve`: Automatically approves resource deletion.
+
+Summary: This command safely removes all AWS infrastructure created by Terraform.
+
+---
+
+# Run Terraform Destroy
+
+```bash
+cd terraform
+terraform destroy -auto-approve
+```
+
+---
+
+# Verify Cleanup
+
+## Command Overview:
+
+Command: `aws eks list-clusters --region us-east-1`
+
+Explanation:
+
+- `aws eks`: Accesses Amazon EKS services.
+- `list-clusters`: Displays existing EKS clusters.
+- `--region us-east-1`: Uses the AWS us-east-1 region.
+
+Summary: This command verifies the EKS cluster was successfully deleted.
+
+---
+
 # Monitoring and Security Services
 
 This platform integrates enterprise monitoring and security services:
@@ -539,3 +417,5 @@ James Banday
 GitHub: https://github.com/jbanday808
 
 LinkedIn: https://www.linkedin.com/in/james-allen-morta-banday-62a391128/
+
+---
