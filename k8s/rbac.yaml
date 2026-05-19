@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: enterprise-app-sa
+  namespace: enterprise-app
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: enterprise-app
+  name: enterprise-app-readonly-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: enterprise-app-readonly-binding
+  namespace: enterprise-app
+subjects:
+  - kind: ServiceAccount
+    name: enterprise-app-sa
+    namespace: enterprise-app
+roleRef:
+  kind: Role
+  name: enterprise-app-readonly-role
+  apiGroup: rbac.authorization.k8s.io

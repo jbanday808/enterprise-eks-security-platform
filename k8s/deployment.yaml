@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enterprise-eks-app
+  namespace: enterprise-app
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: enterprise-eks-app
+  template:
+    metadata:
+      labels:
+        app: enterprise-eks-app
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: enterprise-eks-app
+          image: 727646499790.dkr.ecr.us-east-1.amazonaws.com/enterprise-eks-security-app:latest
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
