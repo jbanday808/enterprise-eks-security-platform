@@ -4,11 +4,11 @@
 
 ## Overview
 
-This document explains the security controls used in the Enterprise Kubernetes Security Platform on Amazon EKS.
+This document explains the security controls implemented in the Enterprise Kubernetes Security Platform on Amazon EKS.
 
-The platform uses layered security across AWS, Kubernetes, Docker, GitHub Actions, Cloudflare, AWS WAF, CloudWatch, CloudTrail, GuardDuty, Security Hub, and Amazon SNS.
+The platform uses layered cloud security across AWS, Kubernetes, Docker, GitHub Actions, Cloudflare, AWS WAF, Amazon CloudWatch, CloudTrail, GuardDuty, Security Hub, Amazon SNS, and secure networking components.
 
-The goal is to protect the application, reduce attack surface, monitor threats, and support secure cloud operations.
+The goal is to reduce attack surface, protect workloads, secure Kubernetes infrastructure, monitor threats, and support enterprise-grade DevSecOps operations.
 
 ---
 
@@ -16,27 +16,27 @@ The goal is to protect the application, reduce attack surface, monitor threats, 
 
 ## Amazon VPC
 
-The platform uses an Amazon VPC to isolate the application environment inside a private AWS network.
+The platform uses an Amazon VPC to isolate cloud resources inside a secure AWS network boundary.
 
 ## Security Purpose
 
-* Separates cloud resources from the public internet
-* Controls network traffic
-* Supports secure subnet design
-* Provides private communication between AWS services
+- Separates workloads from the public internet
+- Controls network communication
+- Supports subnet isolation
+- Enables secure AWS service communication
 
 ## Implemented Controls
 
-* Dedicated VPC
-* Public subnets
-* Private subnets
-* Route tables
-* Internet Gateway
-* NAT Gateway
+- Dedicated Amazon VPC
+- Public subnets
+- Private subnets
+- Route tables
+- Internet Gateway
+- NAT Gateway
 
 ## Security Value
 
-The VPC provides the foundation for secure network segmentation.
+The VPC provides the foundation for secure enterprise network segmentation.
 
 ---
 
@@ -48,18 +48,18 @@ Public subnets host internet-facing resources only.
 
 ## Public Subnet Resources
 
-* Application Load Balancer
-* NAT Gateway
+- Application Load Balancer
+- NAT Gateway
 
 ## Security Controls
 
-* Internet-facing access is limited to approved services
-* Application workloads are not placed in public subnets
-* Traffic is routed through controlled entry points
+- Internet-facing access limited to approved services
+- Kubernetes workloads are not placed in public subnets
+- Public traffic enters through controlled entry points
 
 ## Security Value
 
-This keeps the application workloads protected from direct internet access.
+This limits public exposure and protects backend workloads.
 
 ---
 
@@ -67,24 +67,24 @@ This keeps the application workloads protected from direct internet access.
 
 ## Purpose
 
-Private subnets host sensitive Kubernetes resources.
+Private subnets host protected Kubernetes resources.
 
 ## Private Subnet Resources
 
-* Amazon EKS Worker Nodes
-* Kubernetes Pods
-* Internal Kubernetes Services
+- Amazon EKS Worker Nodes
+- Kubernetes Pods
+- Internal Kubernetes Services
 
 ## Security Controls
 
-* No direct public IP exposure
-* Workloads stay inside private subnets
-* Outbound internet access goes through NAT Gateway
-* Inbound traffic must pass through ALB and security controls
+- No direct public IP addresses
+- Workloads remain inside private networking
+- Outbound internet access uses NAT Gateway
+- Inbound traffic must pass through ALB and security layers
 
 ## Security Value
 
-This protects backend workloads from direct public access.
+Private subnets protect application workloads from direct internet access.
 
 ---
 
@@ -92,17 +92,17 @@ This protects backend workloads from direct public access.
 
 ## Purpose
 
-The NAT Gateway allows private resources to reach the internet safely.
+The NAT Gateway allows private workloads to access the internet securely.
 
 ## Security Controls
 
-* Allows outbound updates
-* Blocks direct inbound internet access
-* Supports private subnet workload isolation
+- Allows outbound updates and package downloads
+- Prevents direct inbound internet access
+- Supports isolated Kubernetes workloads
 
 ## Security Value
 
-Private workloads can download updates without being exposed to the internet.
+This enables secure outbound internet connectivity for private resources.
 
 ---
 
@@ -110,20 +110,20 @@ Private workloads can download updates without being exposed to the internet.
 
 ## Purpose
 
-Amazon EKS runs the Kubernetes platform that manages application containers.
+Amazon EKS manages Kubernetes orchestration securely.
 
 ## Security Controls
 
-* Managed Kubernetes control plane
-* Private worker nodes
-* IAM roles for cluster and nodes
-* Kubernetes RBAC
-* Kubernetes Network Policies
-* Secure namespace configuration
+- Managed Kubernetes control plane
+- Private worker nodes
+- IAM roles for EKS resources
+- Kubernetes RBAC
+- Kubernetes Network Policies
+- Secure namespace configuration
 
 ## Security Value
 
-EKS provides managed Kubernetes operations while allowing security controls at the cluster and workload levels.
+Amazon EKS supports enterprise Kubernetes deployment with layered security controls.
 
 ---
 
@@ -131,7 +131,7 @@ EKS provides managed Kubernetes operations while allowing security controls at t
 
 ## Purpose
 
-Namespaces separate Kubernetes resources logically.
+Namespaces separate Kubernetes workloads logically.
 
 ## Implemented Namespace
 
@@ -149,7 +149,7 @@ pod-security.kubernetes.io/warn: restricted
 
 ## Security Value
 
-Namespace security labels help enforce safer pod behavior.
+Namespace security labels enforce safer Kubernetes pod behavior.
 
 ---
 
@@ -157,30 +157,30 @@ Namespace security labels help enforce safer pod behavior.
 
 ## Purpose
 
-RBAC controls what Kubernetes users and service accounts can access.
+RBAC controls access to Kubernetes resources.
 
 ## Implemented Controls
 
-* ServiceAccount
-* Role
-* RoleBinding
-* Read-only access to selected resources
+- ServiceAccount
+- Role
+- RoleBinding
+- Restricted read-only permissions
 
 ## Allowed Resources
 
-* Pods
-* Services
-* ConfigMaps
+- Pods
+- Services
+- ConfigMaps
 
 ## Allowed Actions
 
-* get
-* list
-* watch
+- get
+- list
+- watch
 
 ## Security Value
 
-RBAC supports least privilege access inside Kubernetes.
+RBAC enforces least privilege access inside Kubernetes.
 
 ---
 
@@ -188,17 +188,17 @@ RBAC supports least privilege access inside Kubernetes.
 
 ## Purpose
 
-Network Policies control pod-to-pod and pod-to-service communication.
+Network Policies control pod communication.
 
 ## Security Controls
 
-* Limits unnecessary pod traffic
-* Reduces lateral movement risk
-* Supports zero-trust Kubernetes networking
+- Restricts unnecessary pod traffic
+- Reduces lateral movement risk
+- Supports zero-trust networking
 
 ## Security Value
 
-Network Policies help prevent compromised workloads from freely reaching other pods.
+Network Policies help isolate workloads securely.
 
 ---
 
@@ -206,7 +206,7 @@ Network Policies help prevent compromised workloads from freely reaching other p
 
 ## Purpose
 
-The application runs inside a secure Docker container.
+Applications run inside secure Docker containers.
 
 ## Docker Base Image
 
@@ -216,14 +216,14 @@ FROM nginxinc/nginx-unprivileged:stable-alpine
 
 ## Security Controls
 
-* Uses non-root NGINX image
-* Runs on port `8080`
-* Avoids privileged container execution
-* Uses a small Alpine-based image
+- Non-root NGINX image
+- Port `8080`
+- No privileged container execution
+- Small Alpine-based image
 
 ## Security Value
 
-A non-root container reduces the impact of container compromise.
+Non-root containers reduce privilege escalation risk.
 
 ---
 
@@ -251,7 +251,7 @@ capabilities:
 
 ## Security Value
 
-These settings prevent privilege escalation and reduce Linux container permissions.
+These settings reduce Linux container permissions and prevent privilege escalation.
 
 ---
 
@@ -259,18 +259,18 @@ These settings prevent privilege escalation and reduce Linux container permissio
 
 ## Purpose
 
-Amazon ECR stores Docker container images.
+Amazon ECR securely stores container images.
 
 ## Security Controls
 
-* Image scanning enabled
-* AES-256 encryption
-* Private image repository
-* Controlled image access through IAM
+- Image scanning enabled
+- AES-256 encryption
+- Private image repository
+- IAM-controlled access
 
 ## Security Value
 
-ECR helps detect vulnerabilities before images are deployed to Kubernetes.
+ECR helps identify vulnerable images before deployment.
 
 ---
 
@@ -278,24 +278,24 @@ ECR helps detect vulnerabilities before images are deployed to Kubernetes.
 
 ## Purpose
 
-IAM controls AWS permissions for EKS, worker nodes, and AWS services.
+IAM controls AWS permissions securely.
 
 ## Implemented IAM Roles
 
-* EKS Cluster Role
-* EKS Node Role
-* AWS Load Balancer Controller Role
+- EKS Cluster Role
+- EKS Node Role
+- AWS Load Balancer Controller Role
 
 ## Security Controls
 
-* IAM roles instead of hardcoded credentials
-* Least privilege permissions
-* AWS-managed policies for EKS operations
-* IAM service account for ALB controller
+- IAM roles instead of hardcoded credentials
+- Least privilege access
+- IAM service account integration
+- AWS-managed policies
 
 ## Security Value
 
-IAM reduces unnecessary access and improves cloud permission control.
+IAM reduces unauthorized access risk.
 
 ---
 
@@ -303,20 +303,19 @@ IAM reduces unnecessary access and improves cloud permission control.
 
 ## Purpose
 
-The Application Load Balancer routes public traffic to the Kubernetes application.
+The ALB routes public HTTPS traffic securely.
 
 ## Security Controls
 
-* Internet-facing ALB
-* HTTPS listener
-* SSL certificate through AWS ACM
-* HTTP to HTTPS redirect
-* Health checks
-* ALB ingress controller integration
+- Internet-facing ALB
+- HTTPS listener
+- AWS ACM certificate
+- HTTP to HTTPS redirect
+- ALB health checks
 
 ## Security Value
 
-The ALB provides controlled and secure access to the Kubernetes application.
+The ALB securely exposes Kubernetes services to users.
 
 ---
 
@@ -324,18 +323,18 @@ The ALB provides controlled and secure access to the Kubernetes application.
 
 ## Purpose
 
-The AWS Load Balancer Controller creates and manages ALBs from Kubernetes ingress resources.
+The AWS Load Balancer Controller manages ALBs from Kubernetes ingress resources.
 
 ## Security Controls
 
-* Uses IAM service account
-* Runs in `kube-system`
-* Uses assigned IAM policy
-* Manages ALB resources through Kubernetes
+- IAM service account integration
+- Runs in `kube-system`
+- Uses restricted IAM permissions
+- Kubernetes-managed ALB deployment
 
 ## Security Value
 
-This allows Kubernetes to create AWS load balancers securely through IAM-controlled permissions.
+This securely integrates Kubernetes ingress with AWS load balancing.
 
 ---
 
@@ -343,7 +342,7 @@ This allows Kubernetes to create AWS load balancers securely through IAM-control
 
 ## Purpose
 
-AWS WAF protects the application from malicious web traffic.
+AWS WAF protects against malicious web traffic.
 
 ## WAF Name
 
@@ -353,27 +352,26 @@ enterprise-eks-waf
 
 ## Security Controls
 
-* AWS Managed Rules
-* Common Rule Set
-* Known Bad Inputs Rule Set
-* SQL Injection Rule Set
-* Linux Rule Set
-* Anti-DDoS Rule Set
-* Geographic blocking
-* CloudWatch logging
+- AWS Managed Rules
+- Common Rule Set
+- Known Bad Inputs Rule Set
+- SQL Injection Protection
+- Linux Rule Set
+- Geographic filtering
+- CloudWatch logging
 
 ## Blocked Countries
 
-* Cuba
-* Iran
-* North Korea
-* Russia
-* Syria
-* Venezuela
+- Cuba
+- Iran
+- North Korea
+- Russia
+- Syria
+- Venezuela
 
 ## Security Value
 
-AWS WAF blocks harmful traffic before it reaches the Application Load Balancer.
+AWS WAF filters malicious traffic before it reaches Kubernetes workloads.
 
 ---
 
@@ -381,19 +379,19 @@ AWS WAF blocks harmful traffic before it reaches the Application Load Balancer.
 
 ## Purpose
 
-Cloudflare protects and routes public domain traffic.
+Cloudflare protects and accelerates public traffic.
 
 ## Security Controls
 
-* DNS protection
-* Proxied DNS record
-* DDoS protection
-* HTTPS support
-* Public traffic filtering
+- DNS protection
+- HTTPS proxying
+- DDoS protection
+- Secure traffic routing
+- CDN acceleration
 
 ## Security Value
 
-Cloudflare adds an external security layer before traffic reaches AWS.
+Cloudflare provides an additional security layer before traffic reaches AWS.
 
 ---
 
@@ -401,18 +399,75 @@ Cloudflare adds an external security layer before traffic reaches AWS.
 
 ## Purpose
 
-HTTPS protects data in transit between users and the application.
+HTTPS encrypts traffic between users and the application.
 
 ## Security Controls
 
-* AWS Certificate Manager certificate
-* HTTPS listener on ALB
-* HTTP to HTTPS redirect
-* Secure domain access through Cloudflare
+- AWS Certificate Manager certificate
+- HTTPS listener on ALB
+- HTTP to HTTPS redirect
+- Secure Cloudflare routing
 
 ## Security Value
 
-TLS encryption protects user traffic from interception.
+TLS encryption protects sensitive traffic in transit.
+
+---
+
+# HTTPS Validation Screenshot
+
+The Enterprise Kubernetes Security Platform successfully uses HTTPS encryption through Cloudflare, AWS Application Load Balancer, and AWS Certificate Manager.
+
+The screenshot below confirms:
+
+- HTTPS is enabled
+- TLS certificate is valid
+- Secure browser connection is active
+- Traffic is encrypted in transit
+- The public application endpoint is protected
+
+## Secure HTTPS Validation
+
+![Secure HTTPS for EKS ALB](../images/Secure%20HTTPS%20for%20EKS%20ALB.png)
+
+---
+
+# HTTPS Security Benefits
+
+The HTTPS implementation provides several enterprise security protections:
+
+- Encrypts user traffic
+- Prevents man-in-the-middle attacks
+- Protects sensitive data in transit
+- Verifies website authenticity
+- Supports secure application delivery
+- Improves enterprise cloud security posture
+
+---
+
+# HTTPS Security Components
+
+The secure HTTPS implementation uses:
+
+- Cloudflare HTTPS Proxy
+- AWS Certificate Manager
+- Application Load Balancer HTTPS Listener
+- TLS Encryption
+- Secure DNS Routing
+- HTTP to HTTPS Redirection
+
+---
+
+# HTTPS Validation Result
+
+The successful HTTPS validation confirms:
+
+- The Kubernetes application is publicly reachable
+- HTTPS encryption is functioning correctly
+- SSL/TLS certificates are valid
+- Cloudflare integration is operational
+- The ALB is securely routing traffic
+- The EKS platform is production-ready
 
 ---
 
@@ -420,27 +475,27 @@ TLS encryption protects user traffic from interception.
 
 ## Purpose
 
-CloudWatch monitors system and application activity.
+CloudWatch monitors infrastructure and application activity.
 
 ## Security Controls
 
-* Application logs
-* ALB metrics
-* WAF logs
-* Dashboard monitoring
-* Kubernetes performance visibility
+- Application logging
+- ALB metrics
+- WAF logs
+- Dashboard monitoring
+- Kubernetes metrics visibility
 
 ## Monitored Metrics
 
-* RequestCount
-* TargetResponseTime
-* CPU utilization
-* Memory utilization
-* Network traffic
+- RequestCount
+- TargetResponseTime
+- CPU utilization
+- Memory utilization
+- Network traffic
 
 ## Security Value
 
-CloudWatch provides visibility into performance and security events.
+CloudWatch provides centralized monitoring and operational visibility.
 
 ---
 
@@ -452,14 +507,14 @@ CloudTrail records AWS account activity.
 
 ## Security Controls
 
-* API activity logging
-* Account activity tracking
-* Security investigation support
-* Audit trail visibility
+- API logging
+- Account activity tracking
+- Audit visibility
+- Security investigation support
 
 ## Security Value
 
-CloudTrail helps identify who made changes in AWS and when those changes happened.
+CloudTrail supports auditing and compliance investigations.
 
 ---
 
@@ -467,18 +522,18 @@ CloudTrail helps identify who made changes in AWS and when those changes happene
 
 ## Purpose
 
-GuardDuty detects suspicious activity and potential threats.
+GuardDuty detects suspicious cloud activity.
 
 ## Security Controls
 
-* Threat detection
-* Suspicious activity monitoring
-* AWS account behavior analysis
-* Security finding generation
+- Threat detection
+- Suspicious behavior analysis
+- Security findings generation
+- AWS account monitoring
 
 ## Security Value
 
-GuardDuty supports early detection of cloud threats.
+GuardDuty supports proactive cloud threat detection.
 
 ---
 
@@ -486,18 +541,18 @@ GuardDuty supports early detection of cloud threats.
 
 ## Purpose
 
-Security Hub centralizes security findings from AWS services.
+Security Hub centralizes security findings.
 
 ## Security Controls
 
-* Centralized findings
-* Risk visibility
-* Security posture review
-* Vulnerability tracking
+- Centralized findings dashboard
+- Risk visibility
+- Security posture review
+- Vulnerability management
 
 ## Security Value
 
-Security Hub helps teams review and prioritize security risks faster.
+Security Hub helps prioritize and manage security risks.
 
 ---
 
@@ -505,18 +560,18 @@ Security Hub helps teams review and prioritize security risks faster.
 
 ## Purpose
 
-SNS sends alerts and notifications for important events.
+SNS provides alerting and notifications.
 
 ## Security Controls
 
-* Security notifications
-* Monitoring alerts
-* Operational alerts
-* Incident response support
+- Monitoring alerts
+- Security notifications
+- Incident response alerts
+- Operational notifications
 
 ## Security Value
 
-SNS helps teams respond faster to security or system issues.
+SNS improves response time for operational and security issues.
 
 ---
 
@@ -524,14 +579,14 @@ SNS helps teams respond faster to security or system issues.
 
 ## Purpose
 
-Metrics Server provides Kubernetes CPU and memory visibility.
+Metrics Server provides Kubernetes resource visibility.
 
 ## Security Controls
 
-* Node metrics
-* Pod metrics
-* Resource usage monitoring
-* Operational health checks
+- Node metrics
+- Pod metrics
+- CPU monitoring
+- Memory monitoring
 
 ## Validation Commands
 
@@ -542,7 +597,7 @@ kubectl top pods -n enterprise-app
 
 ## Security Value
 
-Metrics help detect unusual workload behavior and resource spikes.
+Metrics monitoring helps detect unusual workload behavior.
 
 ---
 
@@ -550,19 +605,19 @@ Metrics help detect unusual workload behavior and resource spikes.
 
 ## Purpose
 
-GitHub Actions automates build and deployment.
+GitHub Actions automates secure CI/CD deployment.
 
 ## Security Controls
 
-* AWS credentials stored as GitHub Secrets
-* Automated Docker image build
-* Automated ECR push
-* Automated Kubernetes deployment
-* Deployment verification
+- GitHub Secrets
+- Automated Docker builds
+- Automated ECR push
+- Automated Kubernetes deployment
+- Deployment verification
 
 ## Security Value
 
-CI/CD automation reduces manual errors and improves deployment consistency.
+CI/CD automation improves deployment consistency and reduces manual risk.
 
 ---
 
@@ -570,15 +625,15 @@ CI/CD automation reduces manual errors and improves deployment consistency.
 
 ## Purpose
 
-Sensitive credentials must not be stored in source code.
+Sensitive credentials must remain protected.
 
 ## Security Controls
 
-* Use GitHub Secrets
-* Do not commit AWS keys
-* Do not commit GitHub tokens
-* Do not commit Terraform state files
-* Do not commit `.terraform/` provider folders
+- GitHub Secrets
+- No hardcoded AWS keys
+- No hardcoded GitHub tokens
+- No Terraform state uploads
+- `.terraform/` excluded from Git
 
 ## `.gitignore` Controls
 
@@ -590,7 +645,7 @@ Sensitive credentials must not be stored in source code.
 
 ## Security Value
 
-This prevents secrets and large Terraform files from being exposed in GitHub.
+This prevents credential exposure and large Terraform provider uploads.
 
 ---
 
@@ -602,16 +657,16 @@ Terraform automates secure infrastructure deployment.
 
 ## Security Controls
 
-* Consistent infrastructure creation
-* Tagged resources
-* IAM role management
-* EKS cluster logging enabled
-* ECR scanning enabled
-* Private subnet worker nodes
+- Consistent infrastructure provisioning
+- Tagged AWS resources
+- IAM role management
+- EKS cluster logging enabled
+- ECR image scanning enabled
+- Private subnet worker nodes
 
 ## Security Value
 
-Terraform reduces manual configuration errors and supports repeatable secure deployments.
+Terraform improves repeatable secure infrastructure deployment.
 
 ---
 
@@ -619,19 +674,19 @@ Terraform reduces manual configuration errors and supports repeatable secure dep
 
 ## Purpose
 
-EKS cluster logs provide visibility into Kubernetes control plane activity.
+Cluster logging improves Kubernetes visibility.
 
 ## Enabled Logs
 
-* API
-* Audit
-* Authenticator
-* Controller Manager
-* Scheduler
+- API
+- Audit
+- Authenticator
+- Controller Manager
+- Scheduler
 
 ## Security Value
 
-Cluster logs support troubleshooting, auditing, and security investigations.
+Cluster logs support troubleshooting, auditing, and investigations.
 
 ---
 
@@ -639,18 +694,18 @@ Cluster logs support troubleshooting, auditing, and security investigations.
 
 ## Purpose
 
-Vulnerability management helps identify and remediate container risks.
+Vulnerability management identifies container risks.
 
 ## Security Controls
 
-* ECR image scanning
-* Trivy scanning in CI/CD
-* Secure base image
-* Rebuild and redeploy process
+- ECR image scanning
+- Trivy vulnerability scanning
+- Secure Docker base image
+- Rebuild and redeploy process
 
 ## Security Value
 
-This improves container security before and after deployment.
+This reduces container vulnerability exposure.
 
 ---
 
@@ -688,7 +743,7 @@ kubectl get pods -n kube-system | grep metrics-server
 
 ## Security Value
 
-Validation confirms the platform is running and security components are active.
+Validation confirms the security platform is operational.
 
 ---
 
@@ -696,27 +751,27 @@ Validation confirms the platform is running and security components are active.
 
 This project demonstrates layered enterprise cloud security using:
 
-* Private networking
-* Kubernetes RBAC
-* Kubernetes Network Policies
-* Non-root containers
-* Amazon EKS
-* Amazon ECR scanning
-* AWS WAF
-* Cloudflare
-* HTTPS encryption
-* CloudWatch monitoring
-* CloudTrail auditing
-* GuardDuty threat detection
-* Security Hub findings
-* SNS alerting
-* Terraform automation
-* GitHub Actions CI/CD
+- Private networking
+- Kubernetes RBAC
+- Kubernetes Network Policies
+- Non-root containers
+- Amazon EKS
+- Amazon ECR scanning
+- AWS WAF
+- Cloudflare
+- HTTPS encryption
+- CloudWatch monitoring
+- CloudTrail auditing
+- GuardDuty threat detection
+- Security Hub findings
+- SNS alerting
+- Terraform automation
+- GitHub Actions CI/CD
 
-The platform follows DevSecOps best practices by combining infrastructure automation, secure Kubernetes deployment, container security, monitoring, and cloud threat detection.
+The platform follows DevSecOps best practices using infrastructure automation, secure Kubernetes deployment, monitoring, and layered cloud security.
 
 ---
 
 # Final Outcome
 
-The Enterprise Kubernetes Security Platform on Amazon EKS provides a secure, scalable, and recruiter-ready cloud security project that demonstrates real-world experience in AWS, Kubernetes, DevSecOps, cloud monitoring, and infrastructure security.
+The Enterprise Kubernetes Security Platform on Amazon EKS provides a secure, scalable, and recruiter-ready cloud security project demonstrating real-world experience in AWS, Kubernetes, DevSecOps, infrastructure security, cloud monitoring, and enterprise platform operations.
